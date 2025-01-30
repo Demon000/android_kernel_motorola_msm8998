@@ -31,7 +31,9 @@ static DEFINE_SPINLOCK(mmi_msm_bin_lock);
 
 static inline void mmi_panic_annotate(const char *str)
 {
+#if 0
 	pstore_annotate(str);
+#endif
 }
 
 static void __init mmi_msm_annotate_socinfo(void)

@@ -73,12 +73,14 @@ EXPORT_SYMBOL(system_serial_high);
 			} \
 		} while (0)
 
+#if 0
 #define EMIT_BOOTINFO_LASTKMSG(buf, strname, fmt, name) \
 		do { \
 			snprintf(buf, sizeof(buf), strname ": " fmt "\n", \
 					bi_##name()); \
 			pstore_annotate(buf); \
 		} while (0)
+#endif
 
 /*-------------------------------------------------------------------------*/
 
@@ -335,6 +337,7 @@ const char *bi_bootmode(void)
 }
 EXPORT_SYMBOL(bi_bootmode);
 
+#if 0
 static void bootinfo_lastkmsg_annotate_bl(struct bl_build_sig *bl)
 {
 	int i;
@@ -360,6 +363,7 @@ static void bootinfo_lastkmsg_annotate_bl(struct bl_build_sig *bl)
 
 	pr_info("BOOT_SEQ: 0x%08x\n", bi_boot_seq());
 }
+#endif
 
 /* get_bootinfo fills in the /proc/bootinfo information.
  * We currently only have the powerup reason, mbm_version, serial
@@ -401,7 +405,9 @@ int __init bootinfo_init_module(void)
 	proc_bootinfo = &proc_root;
 	if (!proc_create_data("bootinfo", 0, NULL, &bootinfo_proc_fops, NULL))
 		printk(KERN_ERR "Failed to create bootinfo entry");
+#if 0
 	bootinfo_lastkmsg_annotate_bl(bl_build_sigs);
+#endif
 	return 0;
 }
 
