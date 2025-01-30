@@ -9081,19 +9081,6 @@ static struct snd_soc_dai_link msm_ext_tdm_tx_group_be_dai[] = {
 	},
 };
 
-static struct snd_soc_dai_link msm_tasha_dai_links[
-			 ARRAY_SIZE(msm_common_dai_links) +
-			 ARRAY_SIZE(msm_tasha_fe_dai_links) +
-			 ARRAY_SIZE(msm_common_misc_fe_dai_links) +
-			 ARRAY_SIZE(msm_common_be_dai_links) +
-			 ARRAY_SIZE(msm_tasha_be_dai_links) +
-			 ARRAY_SIZE(msm_wcn_be_dai_links) +
-			 ARRAY_SIZE(ext_disp_be_dai_link) +
-			 ARRAY_SIZE(msm_mi2s_be_dai_links) +
-			 ARRAY_SIZE(msm_auxpcm_be_dai_links) +
-			 ARRAY_SIZE(msm_ext_tdm_tx_group_be_dai) +
-			 ARRAY_SIZE(msm_ext_common_fe_dai)];
-
 static struct snd_soc_dai_link msm_madera_dai_links[
 			 ARRAY_SIZE(msm_madera_fe_dai_links) +
 			 ARRAY_SIZE(msm_madera_be_dai_links) +
@@ -9105,7 +9092,9 @@ static struct snd_soc_dai_link msm_madera_dai_links[
 			 ARRAY_SIZE(msm_wcn_be_dai_links) +
 			 ARRAY_SIZE(ext_disp_be_dai_link) +
 			 ARRAY_SIZE(msm_mi2s_be_dai_links) +
-			 ARRAY_SIZE(msm_auxpcm_be_dai_links)];
+			 ARRAY_SIZE(msm_auxpcm_be_dai_links) +
+			 ARRAY_SIZE(msm_ext_tdm_tx_group_be_dai) +
+			 ARRAY_SIZE(msm_ext_common_fe_dai)];
 
 static struct snd_soc_dai_link msm_tavil_dai_links[
 			 ARRAY_SIZE(msm_common_dai_links) +
@@ -9457,7 +9446,7 @@ static struct snd_soc_card *populate_snd_card_dailinks(struct device *dev)
 {
 	struct snd_soc_card *card = NULL;
 	struct snd_soc_dai_link *dailink;
-	int len_1, len_2, len_3, len_3a, len3_t, len_4, len_5;
+	int len_1, len_2, len_3, len_3a, len_4, len4_t, len_5;
 	int total_links;
 	const struct of_device_id *match;
 
@@ -9468,82 +9457,15 @@ static struct snd_soc_card *populate_snd_card_dailinks(struct device *dev)
 		return NULL;
 	}
 
-	if (!strcmp(match->data, "tasha_codec")) {
-		card = &snd_soc_card_tasha_msm;
-		len_1 = ARRAY_SIZE(msm_common_dai_links);
-		len_2 = len_1 + ARRAY_SIZE(msm_tasha_fe_dai_links);
-		len_3 = len_2 + ARRAY_SIZE(msm_common_misc_fe_dai_links);
-		len3_t = len_3 + ARRAY_SIZE(msm_ext_common_fe_dai);
-		len_4 = len3_t + ARRAY_SIZE(msm_common_be_dai_links);
-		total_links = len_4 + ARRAY_SIZE(msm_tasha_be_dai_links);
-		memcpy(msm_tasha_dai_links,
-		       msm_common_dai_links,
-		       sizeof(msm_common_dai_links));
-		memcpy(msm_tasha_dai_links + len_1,
-		       msm_tasha_fe_dai_links,
-		       sizeof(msm_tasha_fe_dai_links));
-		memcpy(msm_tasha_dai_links + len_2,
-		       msm_common_misc_fe_dai_links,
-		       sizeof(msm_common_misc_fe_dai_links));
-		memcpy(msm_tasha_dai_links + len_3,
-		       msm_ext_common_fe_dai,
-		       sizeof(msm_ext_common_fe_dai));
-		memcpy(msm_tasha_dai_links + len3_t,
-		       msm_common_be_dai_links,
-		       sizeof(msm_common_be_dai_links));
-		memcpy(msm_tasha_dai_links + len_4,
-		       msm_tasha_be_dai_links,
-		       sizeof(msm_tasha_be_dai_links));
-
-		if (of_property_read_bool(dev->of_node, "qcom,wcn-btfm")) {
-			dev_dbg(dev, "%s(): WCN BTFM support present\n",
-				__func__);
-			memcpy(msm_tasha_dai_links + total_links,
-			       msm_wcn_be_dai_links,
-			       sizeof(msm_wcn_be_dai_links));
-			total_links += ARRAY_SIZE(msm_wcn_be_dai_links);
-		}
-
-		if (of_property_read_bool(dev->of_node,
-					  "qcom,ext-disp-audio-rx")) {
-			dev_dbg(dev, "%s(): External display audio support present\n",
-				__func__);
-			memcpy(msm_tasha_dai_links + total_links,
-			ext_disp_be_dai_link,
-			sizeof(ext_disp_be_dai_link));
-			total_links += ARRAY_SIZE(ext_disp_be_dai_link);
-		}
-		if (of_property_read_bool(dev->of_node,
-					  "qcom,mi2s-audio-intf")) {
-			memcpy(msm_tasha_dai_links + total_links,
-			       msm_mi2s_be_dai_links,
-			       sizeof(msm_mi2s_be_dai_links));
-			total_links += ARRAY_SIZE(msm_mi2s_be_dai_links);
-		}
-		if (of_property_read_bool(dev->of_node,
-					  "qcom,auxpcm-audio-intf")) {
-			memcpy(msm_tasha_dai_links + total_links,
-			       msm_auxpcm_be_dai_links,
-			       sizeof(msm_auxpcm_be_dai_links));
-			total_links += ARRAY_SIZE(msm_auxpcm_be_dai_links);
-		}
-		if (of_property_read_bool(dev->of_node,
-					  "qcom,tdm-tx-group-enable")) {
-			dev_dbg(dev, "%s(): TDM Tx group enable\n", __func__);
-			memcpy(msm_tasha_dai_links + total_links,
-			       msm_ext_tdm_tx_group_be_dai,
-			       sizeof(msm_ext_tdm_tx_group_be_dai));
-			total_links += ARRAY_SIZE(msm_ext_tdm_tx_group_be_dai);
-		}
-		dailink = msm_tasha_dai_links;
-	} else if (!strcmp(match->data, "madera-codec")) {
+	if (!strcmp(match->data, "madera-codec")) {
 		card = &snd_soc_card_madera_msm;
 		len_1 = ARRAY_SIZE(msm_madera_fe_dai_links);
 		len_2 = len_1 + ARRAY_SIZE(msm_madera_be_dai_links);
 		len_3 = len_2 + ARRAY_SIZE(msm_madera_amp_dai_links);
 		len_3a = len_3 + ARRAY_SIZE(msm_common_dai_links);
 		len_4 = len_3a + ARRAY_SIZE(msm_common_misc_fe_dai_links);
-		len_5 = len_4 + ARRAY_SIZE(msm_common_be_dai_links);
+		len4_t = len_4 + ARRAY_SIZE(msm_ext_common_fe_dai);
+		len_5 = len4_t + ARRAY_SIZE(msm_common_be_dai_links);
 		total_links = len_5 +
 				ARRAY_SIZE(msm_madera_amp_pdm_dai_links);
 		memcpy(msm_madera_dai_links,
@@ -9562,6 +9484,9 @@ static struct snd_soc_card *populate_snd_card_dailinks(struct device *dev)
 		       msm_common_misc_fe_dai_links,
 		       sizeof(msm_common_misc_fe_dai_links));
 		memcpy(msm_madera_dai_links + len_4,
+		       msm_ext_common_fe_dai,
+		       sizeof(msm_ext_common_fe_dai));
+		memcpy(msm_madera_dai_links + len4_t,
 		       msm_common_be_dai_links,
 		       sizeof(msm_common_be_dai_links));
 		memcpy(msm_madera_dai_links + len_5,
@@ -9600,6 +9525,14 @@ static struct snd_soc_card *populate_snd_card_dailinks(struct device *dev)
 			       msm_auxpcm_be_dai_links,
 			       sizeof(msm_auxpcm_be_dai_links));
 			total_links += ARRAY_SIZE(msm_auxpcm_be_dai_links);
+		}
+		if (of_property_read_bool(dev->of_node,
+					  "qcom,tdm-tx-group-enable")) {
+			dev_dbg(dev, "%s(): TDM Tx group enable\n", __func__);
+			memcpy(msm_madera_dai_links + total_links,
+			       msm_ext_tdm_tx_group_be_dai,
+			       sizeof(msm_ext_tdm_tx_group_be_dai));
+			total_links += ARRAY_SIZE(msm_ext_tdm_tx_group_be_dai);
 		}
 
 		dailink = msm_madera_dai_links;
