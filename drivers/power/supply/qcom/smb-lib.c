@@ -7153,14 +7153,14 @@ static void mmi_heartbeat_work(struct work_struct *work)
 	else if (mmi->usbeb_present && !prev_usbeb_pres)
 		smblib_enable_dc_aicl(chip, true);
 
-	rc = smblib_get_prop_batt_voltage_now(chip, &val);
+	rc = smblib_get_prop_from_bms(chip, POWER_SUPPLY_PROP_VOLTAGE_NOW, &val);
 	if (rc < 0) {
 		smblib_err(chip, "Error getting Batt Voltage rc = %d\n", rc);
 		goto end_hb;
 	} else
 		batt_mv = val.intval / 1000;
 
-	rc = smblib_get_prop_batt_current_now(chip, &val);
+	rc = smblib_get_prop_from_bms(chip, POWER_SUPPLY_PROP_CURRENT_NOW, &val);
 	if (rc < 0) {
 		smblib_err(chip, "Error getting Batt Current rc = %d\n", rc);
 		goto end_hb;
@@ -7174,7 +7174,7 @@ static void mmi_heartbeat_work(struct work_struct *work)
 	} else
 		batt_soc = val.intval;
 
-	rc = smblib_get_prop_batt_temp(chip, &val);
+	rc = smblib_get_prop_from_bms(chip, POWER_SUPPLY_PROP_TEMP, &val);
 	if (rc < 0) {
 		smblib_err(chip,
 			   "Error getting Batt Temperature rc = %d\n", rc);
