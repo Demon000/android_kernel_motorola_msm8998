@@ -195,7 +195,6 @@ error:
 	return ret;
 }
 
-#if 0
 static void allocate_buf_for_compression(void)
 {
 	size_t size;
@@ -238,7 +237,6 @@ static void allocate_buf_for_compression(void)
 	}
 
 }
-#endif
 
 static void free_buf_for_compression(void)
 {
@@ -547,12 +545,7 @@ int pstore_register(struct pstore_info *psi)
 		return -EINVAL;
 	}
 
-	// FIX ME!
-	// Disable pstore compression/decompression for ramdom decompression fail
-	// will enable it when DDR is stable
-#if 0
 	allocate_buf_for_compression();
-#endif
 
 	if (pstore_is_mounted())
 		pstore_get_records(0);
